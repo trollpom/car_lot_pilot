@@ -302,3 +302,14 @@ select.in { appearance: none; background-image: url("data:image/svg+xml;utf8,<sv
 
 /* Allow the Russian product name to wrap beside the sign-in action. */
 .brand,.brand-text{min-width:0}.brand-logo,.header-actions{flex-shrink:0}
+/* Vehicle history panel reuses the current lot layout. */
+.vehicle-checks .vehicle-check-consent {display:flex;align-items:flex-start;gap:9px;margin:12px 0;line-height:1.5}
+.vehicle-checks .vehicle-check-consent input {margin-top:5px;flex:0 0 auto}
+.vehicle-checks [hidden] {display:none!important}
+.vehicle-check-facts {display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:16px 0}
+.vehicle-check-facts>div {display:flex;flex-direction:column;gap:6px;padding:12px;border:1px solid var(--line,#dce2eb);border-radius:10px}
+.vehicle-check-facts small {color:var(--muted,#657185)}
+.vehicle-check-table {overflow-x:auto;margin:12px 0}
+.vehicle-check-table table {width:100%;border-collapse:collapse;text-align:left}
+.vehicle-check-table th,.vehicle-check-table td {padding:9px;border-bottom:1px solid var(--line,#dce2eb);vertical-align:top}
+.vehicle-checks details {margin-top:12px}

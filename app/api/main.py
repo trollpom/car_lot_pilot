@@ -24,6 +24,9 @@ def create_app() -> FastAPI:
     from app.analysis.store import init_store
 
     init_store(recover=True)
+    from app.vehicle_checks.store import init_store as init_vehicle_checks
+
+    init_vehicle_checks(recover=True)
     from app.db import add_event
 
     add_event("system", "Сервис запущен")

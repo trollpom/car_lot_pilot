@@ -67,6 +67,30 @@ def analysis_lot(lot_id):
     return lot
 
 
+from app.vehicle_checks.models import CheckRequest
+from app.vehicle_checks.client import CheckError, CheckSettings
+from app.vehicle_checks import service as checks_service, store as checks_store
+
+
+@router.get("/vehicle-checks/status", dependencies=[Depends(require_admin)])
+def vehicle_checks_status():
+    return CheckSettings.from_env().public_status()
+
+
+@router.get("/lots/{lot_id}/vehicle-check", dependencies=[Depends(require_admin)])
+def vehicle_check_latest(lot_id: int):
+    lot = analysis_lot(lot_id)
+    return {"check": checks_service.mark_identity(checks_store.latest(lot_id), lot)}
+
+
+@router.post("/lots/{lot_id}/vehicle-check", dependencies=[Depends(require_admin)])
+def vehicle_check_start(lot_id: int, req: CheckRequest):
+    try:
+        return checks_service.run(analysis_lot(lot_id), req, CheckSettings.from_env())
+    except CheckError as error:
+        raise HTTPException(error.status, error.public_message) from None
+
+
 @router.get("/ai/status", dependencies=[Depends(require_admin)])
 def ai_status():
     return AnalysisSettings.from_env().public_status()

@@ -135,7 +135,10 @@ async function api(path, opts = {}) {
 
 function applyAdminUI() {
   const on = isAdmin();
-  if (!on) { window.LotAnalysis.unmount(); document.querySelector("#lotAnalysis")?.remove(); }
+  if (!on) {
+    window.LotAnalysis.unmount(); document.querySelector("#lotAnalysis")?.remove();
+    window.VehicleChecks.unmount(); document.querySelector("#vehicleChecks")?.remove();
+  }
   document.querySelectorAll(".admin-only").forEach((el) => el.classList.toggle("hidden", !on));
   els.adminPanel.classList.toggle("hidden", !on);
   els.adminBadge.classList.toggle("hidden", !on);
@@ -437,6 +440,7 @@ function priceChartHtml(history, decrease) {
 
 function renderDetail(lot) {
   window.LotAnalysis.unmount();
+  window.VehicleChecks.unmount();
   const photos = (lot.photos || []).filter((p) => p.local_path);
   const gallery = photos.length
     ? `<div class="gallery">${photos.map((p) =>
@@ -535,6 +539,7 @@ function renderDetail(lot) {
     <div class="detail-desc">${esc(lot.description || "нет описания")}</div>
     ${lot.acquaintance_order ? `<h3>Порядок ознакомления</h3><div class="detail-desc">${esc(lot.acquaintance_order)}</div>` : ""}
     ${conditionHtml}
+    ${isAdmin() ? window.VehicleChecks.shell(lot) : ""}
     ${isAdmin() ? window.LotAnalysis.shell(lot) : ""}
     <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
       ${adminButtons}
@@ -543,6 +548,7 @@ function renderDetail(lot) {
     </div>`;
 
   if (isAdmin()) window.LotAnalysis.mount($("#lotAnalysis"), lot, api);
+  if (isAdmin()) window.VehicleChecks.mount($("#vehicleChecks"), lot, api);
   const b = $("#btnSearchPhotos");
   if (b) b.onclick = async () => {
     b.disabled = true; b.textContent = "Поиск…";
@@ -656,7 +662,7 @@ els.btnLoginSubmit.onclick = adminLogin;
 els.adminPassword.addEventListener("keydown", (e) => { if (e.key === "Enter") adminLogin(); });
 els.btnLogout.onclick = adminLogout;
 
-const closeLot = () => { window.LotAnalysis.unmount(); els.overlay.classList.add("hidden"); };
+const closeLot = () => { window.LotAnalysis.unmount(); window.VehicleChecks.unmount(); els.overlay.classList.add("hidden"); };
 els.btnClose.onclick = closeLot;
 els.overlay.addEventListener("click", (e) => { if (e.target === els.overlay) closeLot(); });
 document.addEventListener("keydown", (e) => {
